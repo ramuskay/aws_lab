@@ -33,3 +33,13 @@ variable "az_of_the_ec2" {
     description = "We will deploy in multiple ec2 but only one will host the EC2 instance"
     type = string
 }
+
+variable "userdb" {
+    description = "User that will access the DB"
+    type = string
+}
+
+variable "groupdbadmin" {
+    description = "Admingroup that will access the DB"
+    type = string
+}
