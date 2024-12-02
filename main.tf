@@ -8,6 +8,12 @@ provider "aws" {
   }
 }
 
+data "aws_organizations_organization" "org" {}
+
+output "org_id" {
+  value = data.aws_organizations_organization.org.id
+}
+
 /******************************************
 	VPC configuration
  *****************************************/
@@ -45,4 +51,14 @@ module "iam" {
   profile                           = var.profile_admin
   userdb = var.userdb
   groupdbadmin = var.groupdbadmin
+  org_id = data.aws_organizations_organization.org.id
+}
+
+module "lambda" {
+  source                                 = "./modules/lambda"
+  region                           = var.region
+  owner                = var.owner
+  profile                           = var.profile_lambda
+  org_id = data.aws_organizations_organization.org.id
+  iam_role_lambda = module.iam.iam_role_lambda_arn
 }

@@ -9,3 +9,6 @@
 
 # Terraform backup files
 *.tfvars.backup
+
+# Lambda archives
+lambda/*.zip
