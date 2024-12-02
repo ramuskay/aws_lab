@@ -1,5 +1,5 @@
 provider "aws" {
-  region = var.region
+  region  = var.region
   profile = var.profile
   default_tags {
     tags = {
@@ -11,43 +11,43 @@ provider "aws" {
 resource "null_resource" "detach_policy" {
   lifecycle {
     #create_before_destroy = true # Useful in case when you want to open port 80 instead of 8080 (no downtime)
-    prevent_destroy = false  # Allow resource to be destroyed
-  }  
+    prevent_destroy = false # Allow resource to be destroyed
+  }
   triggers = {
-    profile      = var.profile
-    dbadmin       = aws_iam_group.dbadmin.name
-    policy    = aws_iam_policy.policy.arn
-  }  
+    profile = var.profile
+    dbadmin = aws_iam_group.dbadmin.name
+    policy  = aws_iam_policy.policy.arn
+  }
   provisioner "local-exec" {
-    when = destroy
-    command = "aws iam detach-group-policy --profile ${self.triggers.profile} --group ${self.triggers.dbadmin} --policy-arn ${self.triggers.policy}"
+    when       = destroy
+    command    = "aws iam detach-group-policy --profile ${self.triggers.profile} --group ${self.triggers.dbadmin} --policy-arn ${self.triggers.policy}"
     on_failure = continue
   }
 }
 
 resource "aws_iam_policy" "policy" {
-  name        = "${var.owner}.IAM.POLICY.AWSFOR.DEV.KFC.DBKFC"
+  name = "${var.owner}.IAM.POLICY.AWSFOR.DEV.KFC.DBKFC"
 
   # Terraform's "jsonencode" function converts a
   # Terraform expression result to valid JSON syntax.
   policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
+    "Version" : "2012-10-17",
+    "Statement" : [
       {
-        "Effect": "Allow",
-        "Action": "rds:*",
-        "Resource": "arn:aws:rds:::"
+        "Effect" : "Allow",
+        "Action" : "rds:*",
+        "Resource" : "arn:aws:rds:::"
       }
     ]
   })
 
   tags = {
     Name = "${var.owner}-policy"
-  }  
+  }
 }
 
 resource "aws_iam_group" "dbadmin" {
-  name = "${var.groupdbadmin}"
+  name = var.groupdbadmin
 }
 
 resource "aws_iam_group_policy_attachments_exclusive" "a" {
@@ -56,7 +56,7 @@ resource "aws_iam_group_policy_attachments_exclusive" "a" {
 }
 
 resource "aws_iam_user" "userdb" {
-  name = "${var.userdb}"
+  name = var.userdb
 }
 
 resource "aws_iam_user_group_membership" "m" {
@@ -66,3 +66,45 @@ resource "aws_iam_user_group_membership" "m" {
     aws_iam_group.dbadmin.name,
   ]
 }
+
+
+// LAMDBA
+
+// TODO:  CHECK DEEPLY this config...
+resource "aws_iam_role" "lamdba_role" {
+  name = "lambda_execution_role_${var.org_id}"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "lambda_execution_role_policy" {
+  name = "lambda_execution_role_policy_${var.org_id}"
+  role = aws_iam_role.lamdba_role.id
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ],
+        "Resource" : "arn:aws:logs:*:*:*"
+      }
+    ]
+    }
+  )
+}
+

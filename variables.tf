@@ -65,3 +65,9 @@ variable "aws_subnets" {
   type = map(any)
   default = {"foo":"bar"}
 }
+
+variable "org_id" {
+  description = "Org ID"
+  type = string
+  default = "123456789"
+}
