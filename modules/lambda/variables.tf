@@ -13,18 +13,12 @@ variable "profile" {
   type        = string
 }
 
-variable "userdb" {
-    description = "User that will access the DB"
-    type = string
-}
-
-variable "groupdbadmin" {
-    description = "Admingroup that will access the DB"
-    type = string
-}
-
 variable "org_id" {
   description = "Org ID"
   type = string
-  default = "123456789"
+}
+
+variable "iam_role_lambda" {
+  description = "Role IAM Lambda"
+  type = string
 }
