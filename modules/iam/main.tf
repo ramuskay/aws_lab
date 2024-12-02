@@ -1,13 +1,27 @@
+provider "aws" {
+  region = var.region
+  profile = var.profile
+  default_tags {
+    tags = {
+      Owner = var.owner
+    }
+  }
+}
+
 resource "null_resource" "detach_policy" {
   lifecycle {
     #create_before_destroy = true # Useful in case when you want to open port 80 instead of 8080 (no downtime)
     prevent_destroy = false  # Allow resource to be destroyed
   }  
   triggers = {
-    destroy = "${timestamp()}" # Trigerred each time beacuse base on timestamp
+    profile      = var.profile
+    dbadmin       = aws_iam_group.dbadmin.name
+    policy    = aws_iam_policy.policy.arn
   }  
   provisioner "local-exec" {
-    command = "aws iam detach-group-policy --group ${aws_iam_group.dbadmin.name} --policy-arn ${aws_iam_policy.policy.arn}"
+    when = destroy
+    command = "aws iam detach-group-policy --profile ${self.triggers.profile} --group ${self.triggers.dbadmin} --policy-arn ${self.triggers.policy}"
+    on_failure = continue
   }
 }
 
@@ -26,6 +40,7 @@ resource "aws_iam_policy" "policy" {
       }
     ]
   })
+
   tags = {
     Name = "${var.owner}-policy"
   }  
