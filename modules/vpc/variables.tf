@@ -8,24 +8,9 @@ variable "owner" {
   type        = string
 }
 
-variable "profile_admin" {
-  description = "The admin profile to use to create/destroy resources"
+variable "profile" {
+  description = "The profile to use to create/destroy resources"
   type        = string
-}
-
-variable "profile_lambda" {
-  description = "The profile to use to create/destroy resources for IAM"
-  type        = string
-}
-
-variable "userdb" {
-    description = "User that will access the DB"
-    type = string
-}
-
-variable "groupdbadmin" {
-    description = "Admingroup that will access the DB"
-    type = string
 }
 
 variable "availability_zones" {
@@ -47,21 +32,4 @@ variable "availability_zones" {
     ap-northeast-1 = ["ap-northeast-1a", "ap-northeast-1c", "ap-northeast-1d"]
     ap-northeast-2 = ["ap-northeast-2a", "ap-northeast-2c"]
   }
-}
-
-variable "az_of_the_ec2" {
-    description = "We will deploy in multiple ec2 but only one will host the EC2 instance"
-    type = string
-}
-
-variable "vpc_id" {
-    description = "The ID of the VPC"
-    type = string
-    default = "foo"
-}
-
-variable "aws_subnets" {
-  description = "subnet public generated"
-  type = map(any)
-  default = {"foo":"bar"}
 }
