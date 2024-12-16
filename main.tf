@@ -1,5 +1,5 @@
 provider "aws" {
-  region = var.region
+  region  = var.region
   profile = var.profile_admin
   default_tags {
     tags = {
@@ -18,23 +18,23 @@ output "org_id" {
 	VPC configuration
  *****************************************/
 module "vpc" {
-  source                                 = "./modules/vpc"
-  region                           = var.region
-  owner                = var.owner
-  profile                           = var.profile_admin
+  source  = "./modules/vpc"
+  region  = var.region
+  owner   = var.owner
+  profile = var.profile_admin
 }
 
 /******************************************
 	EC2 configuration
  *****************************************/
 module "ec2" {
-  source                                 = "./modules/ec2"
-  region                           = var.region
-  owner                = var.owner
-  profile                           = var.profile_admin
+  source        = "./modules/ec2"
+  region        = var.region
+  owner         = var.owner
+  profile       = var.profile_admin
   az_of_the_ec2 = var.az_of_the_ec2
-  vpc_id = module.vpc.vpc_id
-  aws_subnets = module.vpc.aws_subnets
+  vpc_id        = module.vpc.vpc_id
+  aws_subnets   = module.vpc.aws_subnets
 }
 
 output "instance_public_ip" {
@@ -45,20 +45,36 @@ output "instance_public_ip" {
 # 	IAM configuration
 #  *****************************************/
 module "iam" {
-  source                                 = "./modules/iam"
-  region                           = var.region
-  owner                = var.owner
-  profile                           = var.profile_admin
-  userdb = var.userdb
+  source       = "./modules/iam"
+  region       = var.region
+  owner        = var.owner
+  profile      = var.profile_admin
+  userdb       = var.userdb
   groupdbadmin = var.groupdbadmin
-  org_id = data.aws_organizations_organization.org.id
+  org_id       = data.aws_organizations_organization.org.id
 }
 
+# /******************************************
+# 	Lambda configuration
+#  *****************************************/
 module "lambda" {
-  source                                 = "./modules/lambda"
-  region                           = var.region
-  owner                = var.owner
-  profile                           = var.profile_lambda
-  org_id = data.aws_organizations_organization.org.id
+  source          = "./modules/lambda"
+  region          = var.region
+  owner           = var.owner
+  profile         = var.profile_lambda
+  org_id          = data.aws_organizations_organization.org.id
   iam_role_lambda = module.iam.iam_role_lambda_arn
+}
+
+# /******************************************
+# 	API Gateway configuration
+#  *****************************************/
+module "api-gateway" {
+  source            = "./modules/api-gateway"
+  region            = var.region
+  owner             = var.owner
+  profile           = var.profile_apigateway
+  org_id            = data.aws_organizations_organization.org.id
+  lambda_invoke_arn = module.lambda.lambda_invoke_arn
+  lambda_name       = module.lambda.lambda_name
 }
