@@ -18,6 +18,11 @@ variable "profile_lambda" {
   type        = string
 }
 
+variable "profile_apigateway" {
+  description = "The profile to use to create/destroy resources for Api gateway"
+  type        = string
+}
+
 variable "userdb" {
     description = "User that will access the DB"
     type = string
@@ -68,6 +73,18 @@ variable "aws_subnets" {
 
 variable "org_id" {
   description = "Org ID"
+  type = string
+  default = "123456789"
+}
+
+variable "lambda_invoke_arn" {
+  description = "ARN Lambda"
+  type = string
+  default = "123456789"
+}
+
+variable "lambda_name" {
+  description = "Name Lambda"
   type = string
   default = "123456789"
 }
