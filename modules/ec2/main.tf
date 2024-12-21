@@ -1,5 +1,5 @@
 provider "aws" {
-  region = var.region
+  region  = var.region
   profile = var.profile
   default_tags {
     tags = {
@@ -66,7 +66,7 @@ resource "aws_vpc_security_group_ingress_rule" "sg-ingress" {
   to_port           = 22
   tags = {
     Name = "${var.owner}-sg-ingress"
-  }  
+  }
 }
 
 resource "aws_vpc_security_group_egress_rule" "sg-egress" {
@@ -77,5 +77,5 @@ resource "aws_vpc_security_group_egress_rule" "sg-egress" {
   to_port           = 80
   tags = {
     Name = "${var.owner}-sg-egress"
-  }    
+  }
 }

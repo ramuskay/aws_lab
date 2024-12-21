@@ -14,16 +14,16 @@ variable "profile" {
 }
 
 variable "az_of_the_ec2" {
-    description = "We will deploy in multiple ec2 but only one will host the EC2 instance"
-    type = string
+  description = "We will deploy in multiple ec2 but only one will host the EC2 instance"
+  type        = string
 }
 
 variable "vpc_id" {
-    description = "VPC ID"
-    type = string
+  description = "VPC ID"
+  type        = string
 }
 
 variable "aws_subnets" {
   description = "subnet public generated"
-  type = map(any)
+  type        = map(any)
 }

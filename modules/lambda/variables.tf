@@ -15,16 +15,15 @@ variable "profile" {
 
 variable "org_id" {
   description = "Org ID"
-  type = string
+  type        = string
 }
 
 variable "iam_role_lambda" {
   description = "Role IAM Lambda"
-  type = string
+  type        = string
 }
 
 variable "list_lambda" {
   description = "List of application directories"
   type        = set(string)
-  default     = ["CaliforniaTaxCalculator", "SimpleTaxCalculator", "WisconsinTaxCalculator"]
 }

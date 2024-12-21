@@ -15,15 +15,13 @@ variable "profile" {
 
 variable "org_id" {
   description = "Org ID"
-  type = string
-  default = "123456789"
+  type        = string
 }
 
 variable "lambda" {
   description = "Name Lambda"
   type = map(object({
-    name      = string
-    arn       = string
+    name = string
+    arn  = string
   }))
-  default     = {"SimpleTaxCalculator" = { "name" = "lambda1", "arn" = "sdgsgsg"}}
 }

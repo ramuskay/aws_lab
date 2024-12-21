@@ -1,5 +1,5 @@
 provider "aws" {
-  region = var.region
+  region  = var.region
   profile = var.profile
   default_tags {
     tags = {
@@ -21,8 +21,8 @@ resource "aws_subnet" "subnet-public" {
   cidr_block        = cidrsubnet(aws_vpc.vpc.cidr_block, 8, index(var.availability_zones[var.region], each.value))
   availability_zone = each.value
   tags = {
-    Name = "${var.owner}-subnet-public-f-${substr(var.region, length(var.region) -1, 1)}${substr(each.value, length(each.value)-1, 1)}"
-  }  
+    Name = "${var.owner}-subnet-public-f-${substr(var.region, length(var.region) - 1, 1)}${substr(each.value, length(each.value) - 1, 1)}"
+  }
 }
 
 resource "aws_internet_gateway" "ig" {}
