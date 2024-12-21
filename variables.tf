@@ -23,6 +23,11 @@ variable "profile_apigateway" {
   type        = string
 }
 
+variable "profile_step_function" {
+  description = "The profile to use to create/destroy resources for Api gateway"
+  type        = string
+}
+
 variable "userdb" {
     description = "User that will access the DB"
     type = string
@@ -77,14 +82,18 @@ variable "org_id" {
   default = "123456789"
 }
 
-variable "lambda_invoke_arn" {
-  description = "ARN Lambda"
-  type = string
-  default = "123456789"
+variable "lambda" {
+  description = "Name Lambda"
+  type = map(object({
+    name       = string
+    arn        = string
+    invoke_arn = string
+  }))
+  default     = {"SimpleTaxCalculator" = { "name" = "lambda1", "arn" = "sdgsgsg", invoke_arn = "aaaaaa"}}
 }
 
-variable "lambda_name" {
-  description = "Name Lambda"
-  type = string
-  default = "123456789"
+variable "list_lambda" {
+  description = "List of application directories"
+  type        = set(string)
+  default     = ["CaliforniaTaxCalculator", "SimpleTaxCalculator", "WisconsinTaxCalculator"]
 }

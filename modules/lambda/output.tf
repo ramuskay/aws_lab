@@ -1,7 +1,10 @@
-output "lambda_invoke_arn" {
-  value = aws_lambda_function.lambda_SimpleTaxCalculator.invoke_arn
-}
-
-output "lambda_name" {
-  value = aws_lambda_function.lambda_SimpleTaxCalculator.function_name
+output "lambda" {
+  value = {
+    for l in aws_lambda_function.lambda :
+    l.function_name => ({
+      name       = l.function_name
+      invoke_arn = l.invoke_arn
+      arn         = l.arn
+    })
+  }
 }

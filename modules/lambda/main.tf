@@ -8,33 +8,28 @@ provider "aws" {
   }
 }
 
-data "archive_file" "lambda" {
+data "archive_file" "lambda_file" {
+  for_each = var.list_lambda
   type        = "zip"
-  source_file = "${path.module}/index.js"
-  output_path = "${path.module}/lambda_SimpleTaxCalculator.zip"
+  source_file = "${path.module}/lambda_${each.key}/index.js"
+  output_path = "${path.module}/lambda_${each.key}.zip"
 }
 
-resource "aws_lambda_function" "lambda_SimpleTaxCalculator" {
-  filename      = "${path.module}/lambda_SimpleTaxCalculator.zip"
-  function_name = "SimpleTaxCalculator-${var.org_id}"
+resource "aws_lambda_function" "lambda" {
+  for_each = var.list_lambda
+  filename      = "${path.module}/lambda_${each.key}.zip"
+  function_name = "${each.key}-${var.org_id}"
   role          = var.iam_role_lambda
   handler       = "index.handler"
 
-  source_code_hash = data.archive_file.lambda.output_base64sha256
+  source_code_hash = data.archive_file.lambda_file[each.key].output_base64sha256
   publish       = true
 
   runtime = "nodejs22.x"
 }
 
-# Not sure about this one
-# resource "aws_lambda_alias" "lambda_SimpleTaxCalculator_alias_prd" {
-#   name             = "prod"
-#   function_name    = aws_lambda_function.lambda_SimpleTaxCalculator.arn
-#   function_version = "1"
-# }
-
 resource "aws_lambda_alias" "lambda_SimpleTaxCalculator_alias_dev" {
   name             = "dev"
-  function_name    = aws_lambda_function.lambda_SimpleTaxCalculator.arn
+  function_name    = aws_lambda_function.lambda["SimpleTaxCalculator"].arn
   function_version = "$LATEST"
 }
