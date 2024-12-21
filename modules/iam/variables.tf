@@ -14,17 +14,16 @@ variable "profile" {
 }
 
 variable "userdb" {
-    description = "User that will access the DB"
-    type = string
+  description = "User that will access the DB"
+  type        = string
 }
 
 variable "groupdbadmin" {
-    description = "Admingroup that will access the DB"
-    type = string
+  description = "Admingroup that will access the DB"
+  type        = string
 }
 
 variable "org_id" {
   description = "Org ID"
-  type = string
-  default = "123456789"
+  type        = string
 }

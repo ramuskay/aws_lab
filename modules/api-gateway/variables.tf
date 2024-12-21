@@ -15,8 +15,7 @@ variable "profile" {
 
 variable "org_id" {
   description = "Org ID"
-  type = string
-  default = "123456789"
+  type        = string
 }
 
 variable "lambda" {
@@ -26,5 +25,4 @@ variable "lambda" {
     arn        = string
     invoke_arn = string
   }))
-  default     = {"SimpleTaxCalculator" = { "name" = "lambda1", "arn" = "sdgsgsg", invoke_arn = "aaaaaa"}}
 }

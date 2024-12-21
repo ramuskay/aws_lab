@@ -8,38 +8,23 @@ variable "owner" {
   type        = string
 }
 
-variable "profile_admin" {
+variable "profile" {
   description = "The admin profile to use to create/destroy resources"
-  type        = string
-}
-
-variable "profile_lambda" {
-  description = "The profile to use to create/destroy resources for IAM"
-  type        = string
-}
-
-variable "profile_apigateway" {
-  description = "The profile to use to create/destroy resources for Api gateway"
-  type        = string
-}
-
-variable "profile_step_function" {
-  description = "The profile to use to create/destroy resources for Api gateway"
-  type        = string
+  type        = map(string)
 }
 
 variable "userdb" {
-    description = "User that will access the DB"
-    type = string
+  description = "User that will access the DB"
+  type        = string
 }
 
 variable "groupdbadmin" {
-    description = "Admingroup that will access the DB"
-    type = string
+  description = "Admingroup that will access the DB"
+  type        = string
 }
 
 variable "availability_zones" {
-  type = map
+  type = map(any)
   default = {
     us-east-1      = ["us-east-1a", "us-east-1b", "us-east-1c", "us-east-1d", "us-east-1e", "us-east-1f"]
     us-east-2      = ["us-east-2a", "eu-east-2b", "eu-east-2c"]
@@ -60,40 +45,39 @@ variable "availability_zones" {
 }
 
 variable "az_of_the_ec2" {
-    description = "We will deploy in multiple ec2 but only one will host the EC2 instance"
-    type = string
+  description = "We will deploy in multiple ec2 but only one will host the EC2 instance"
+  type        = string
 }
 
 variable "vpc_id" {
-    description = "The ID of the VPC"
-    type = string
-    default = "foo"
+  description = "The ID of the VPC"
+  type        = string
+  default     = "foo"
 }
 
 variable "aws_subnets" {
   description = "subnet public generated"
-  type = map(any)
-  default = {"foo":"bar"}
+  type        = map(any)
+  default     = { "foo" : "bar" }
 }
 
 variable "org_id" {
   description = "Org ID"
-  type = string
-  default = "123456789"
+  type        = string
+  default     = "123456789"
 }
 
-variable "lambda" {
-  description = "Name Lambda"
+variable "lambda_object" {
+  description = "Lambda Object"
   type = map(object({
     name       = string
     arn        = string
     invoke_arn = string
   }))
-  default     = {"SimpleTaxCalculator" = { "name" = "lambda1", "arn" = "sdgsgsg", invoke_arn = "aaaaaa"}}
+  default = { "lambda_object" = { "name" = "lambda1", "arn" = "0123", invoke_arn = "456789" } }
 }
 
 variable "list_lambda" {
   description = "List of application directories"
   type        = set(string)
-  default     = ["CaliforniaTaxCalculator", "SimpleTaxCalculator", "WisconsinTaxCalculator"]
 }

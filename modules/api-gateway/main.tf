@@ -38,7 +38,7 @@ resource "aws_api_gateway_integration" "integration" {
 
 resource "aws_lambda_permission" "lambda_permission" {
   action        = "lambda:InvokeFunction"
-  function_name = "${var.lambda["SimpleTaxCalculator-${var.org_id}"].name}"
+  function_name = var.lambda["SimpleTaxCalculator-${var.org_id}"].name
   principal     = "apigateway.amazonaws.com"
 
   source_arn = "${aws_api_gateway_rest_api.api.execution_arn}/*"

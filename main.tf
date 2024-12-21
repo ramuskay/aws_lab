@@ -1,6 +1,6 @@
 provider "aws" {
   region  = var.region
-  profile = var.profile_admin
+  profile = var.profile["admin"]
   default_tags {
     tags = {
       Owner = var.owner
@@ -18,10 +18,11 @@ output "org_id" {
 	VPC configuration
  *****************************************/
 module "vpc" {
-  source  = "./modules/vpc"
-  region  = var.region
-  owner   = var.owner
-  profile = var.profile_admin
+  source             = "./modules/vpc"
+  region             = var.region
+  owner              = var.owner
+  profile            = var.profile["admin"]
+  availability_zones = var.availability_zones
 }
 
 /******************************************
@@ -31,7 +32,7 @@ module "ec2" {
   source        = "./modules/ec2"
   region        = var.region
   owner         = var.owner
-  profile       = var.profile_admin
+  profile       = var.profile["admin"]
   az_of_the_ec2 = var.az_of_the_ec2
   vpc_id        = module.vpc.vpc_id
   aws_subnets   = module.vpc.aws_subnets
@@ -48,7 +49,7 @@ module "iam" {
   source       = "./modules/iam"
   region       = var.region
   owner        = var.owner
-  profile      = var.profile_admin
+  profile      = var.profile["admin"]
   userdb       = var.userdb
   groupdbadmin = var.groupdbadmin
   org_id       = data.aws_organizations_organization.org.id
@@ -61,7 +62,7 @@ module "lambda" {
   source          = "./modules/lambda"
   region          = var.region
   owner           = var.owner
-  profile         = var.profile_lambda
+  profile         = var.profile["lambda"]
   org_id          = data.aws_organizations_organization.org.id
   iam_role_lambda = module.iam.iam_role_lambda_arn
   list_lambda     = var.list_lambda
@@ -71,12 +72,12 @@ module "lambda" {
 # 	API Gateway configuration
 #  *****************************************/
 module "api-gateway" {
-  source            = "./modules/api-gateway"
-  region            = var.region
-  owner             = var.owner
-  profile           = var.profile_apigateway
-  org_id            = data.aws_organizations_organization.org.id
-  lambda            = module.lambda.lambda
+  source  = "./modules/api-gateway"
+  region  = var.region
+  owner   = var.owner
+  profile = var.profile["api_gateway"]
+  org_id  = data.aws_organizations_organization.org.id
+  lambda  = module.lambda.lambda_object
 }
 
 
@@ -84,10 +85,10 @@ module "api-gateway" {
 # 	Step Functions configuration
 #  *****************************************/
 module "step_functions" {
-  source            = "./modules/step_functions"
-  region            = var.region
-  owner             = var.owner
-  profile           = var.profile_step_function
-  org_id            = data.aws_organizations_organization.org.id
-  lambda            = module.lambda.lambda
+  source  = "./modules/step_functions"
+  region  = var.region
+  owner   = var.owner
+  profile = var.profile["step_function"]
+  org_id  = data.aws_organizations_organization.org.id
+  lambda  = module.lambda.lambda_object
 }
