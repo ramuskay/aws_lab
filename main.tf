@@ -64,6 +64,7 @@ module "lambda" {
   profile         = var.profile_lambda
   org_id          = data.aws_organizations_organization.org.id
   iam_role_lambda = module.iam.iam_role_lambda_arn
+  list_lambda     = var.list_lambda
 }
 
 # /******************************************
@@ -75,6 +76,18 @@ module "api-gateway" {
   owner             = var.owner
   profile           = var.profile_apigateway
   org_id            = data.aws_organizations_organization.org.id
-  lambda_invoke_arn = module.lambda.lambda_invoke_arn
-  lambda_name       = module.lambda.lambda_name
+  lambda            = module.lambda.lambda
+}
+
+
+# /******************************************
+# 	Step Functions configuration
+#  *****************************************/
+module "step_functions" {
+  source            = "./modules/step_functions"
+  region            = var.region
+  owner             = var.owner
+  profile           = var.profile_step_function
+  org_id            = data.aws_organizations_organization.org.id
+  lambda            = module.lambda.lambda
 }

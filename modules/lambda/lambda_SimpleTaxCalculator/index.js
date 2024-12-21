@@ -18,6 +18,7 @@ exports.handler = (event, context, callback) => {
         console.log(`Product price: $${productPrice}`);
         console.log(`Tax rate: ${taxRate}%`);
         console.log(`Surcharge rate: ${surchargeRate}%`);
+        
         let tax = productPrice * (taxRate / 100.00);
         let surcharge = productPrice * (surchargeRate / 100.00);
         let finalPrice = productPrice + tax + surcharge;

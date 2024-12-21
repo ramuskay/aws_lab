@@ -33,12 +33,12 @@ resource "aws_api_gateway_integration" "integration" {
   http_method             = aws_api_gateway_method.method.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = var.lambda_invoke_arn
+  uri                     = var.lambda["SimpleTaxCalculator-${var.org_id}"].invoke_arn
 }
 
 resource "aws_lambda_permission" "lambda_permission" {
   action        = "lambda:InvokeFunction"
-  function_name = "${var.lambda_name}"
+  function_name = "${var.lambda["SimpleTaxCalculator-${var.org_id}"].name}"
   principal     = "apigateway.amazonaws.com"
 
   source_arn = "${aws_api_gateway_rest_api.api.execution_arn}/*"

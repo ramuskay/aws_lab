@@ -22,9 +22,8 @@ variable "org_id" {
 variable "lambda" {
   description = "Name Lambda"
   type = map(object({
-    name       = string
-    arn        = string
-    invoke_arn = string
+    name      = string
+    arn       = string
   }))
-  default     = {"SimpleTaxCalculator" = { "name" = "lambda1", "arn" = "sdgsgsg", invoke_arn = "aaaaaa"}}
+  default     = {"SimpleTaxCalculator" = { "name" = "lambda1", "arn" = "sdgsgsg"}}
 }
